@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Conectando Drive...</title></head>
+<body>
+<div style="font-family:Arial,sans-serif;text-align:center;padding:60px;color:#084d2b">
+  <h2>⏳ Conectando con Google Drive...</h2>
+  <p>Esta ventana se cerrará automáticamente.</p>
+</div>
+<script>
+  try {
+    const hash = location.hash || '';
+    if (hash.includes('access_token')) {
+      const p = new URLSearchParams(hash.slice(1));
+      const token = p.get('access_token');
+      const expiresIn = p.get('expires_in') || '3600';
+      if (token) {
+        localStorage.setItem('mc_drive_token', token);
+        localStorage.setItem('mc_drive_expiry', String(Date.now() + (parseInt(expiresIn) - 60) * 1000));
+        localStorage.removeItem('mc_drive_auth_pending');
+        document.querySelector('h2').textContent = '✅ Google Drive conectado';
+        document.querySelector('p').textContent = 'Redirigiendo a la app...';
+        setTimeout(() => {
+          location.href = 'https://jcordonezmartinez-cmd.github.io/Mi-Cartera/';
+        }, 1500);
+      }
+    } else {
+      document.querySelector('h2').textContent = '❌ Error al conectar';
+      document.querySelector('p').textContent = 'No se recibió el token. Cierra esta ventana e intenta de nuevo.';
+    }
+  } catch(e) {
+    document.querySelector('p').textContent = 'Error: ' + e.message;
+  }
+</script>
+</body>
+</html>
